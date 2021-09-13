@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:map/pages/api.dart';
 import './pages/map.dart';
 
 void main() {
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
         '/home': (BuildContext context) =>
             MyHomePage(title: 'Flutter Demo Home Page'),
         '/map': (BuildContext context) => MapPage(title: 'Map Page'),
+        '/api': (BuildContext context) => ApiPage(title: 'Api'),
       },
     );
   }
@@ -52,6 +54,10 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.of(context).pushNamed('/map');
   }
 
+  void _navigateToApi() {
+    Navigator.of(context).pushNamed('/api');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,6 +81,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: _incrementCounter, child: const Text('Increment')),
             TextButton(
                 onPressed: _navigateToMap, child: const Text('Go To Map')),
+            TextButton(
+                onPressed: _navigateToApi, child: const Text('Go To Api')),
           ],
         ),
       ),
