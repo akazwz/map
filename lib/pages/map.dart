@@ -77,7 +77,8 @@ class _MapState extends State<MapPage> {
               ),
               layers: [
                 TileLayerOptions(
-                  urlTemplate: 'assets/map/zelda/{z}/{x}/{y}.png',
+                  urlTemplate:
+                      'https://map.hellozwz.com/public/images/tiles/{z}/{x}/{y}.png',
                   subdomains: ['a', 'b', 'c'],
                 ),
                 MarkerLayerOptions(
