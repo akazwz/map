@@ -12,6 +12,14 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapState extends State<MapPage> {
+  LatLng latLng = LatLng(33, 33);
+
+  void _handleMapOnTap(LatLng ll) {
+    setState(() {
+      latLng = ll;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var markers = <Marker>[
@@ -65,15 +73,21 @@ class _MapState extends State<MapPage> {
       appBar: AppBar(title: Text('Map')),
       body: Column(
         children: [
+          Text('lat:' +
+              latLng.latitude.toString() +
+              ' lng:' +
+              latLng.longitude.toString()),
           Flexible(
             child: FlutterMap(
               options: MapOptions(
                 center: LatLng(70.505, -75.09),
-                zoom: 2,
+                zoom: 1,
                 maxZoom: 6,
-                minZoom: 2,
-                bounds: LatLngBounds(LatLng(85.455, 38), LatLng(0, -176.59)),
+                minZoom: 1,
+                bounds:
+                    LatLngBounds(LatLng(85.000, -179.00), LatLng(0, 38.000)),
                 boundsOptions: FitBoundsOptions(padding: EdgeInsets.all(8.0)),
+                onTap: _handleMapOnTap,
               ),
               layers: [
                 TileLayerOptions(
