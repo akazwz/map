@@ -4,9 +4,9 @@ class HotSearch {
   final String msg;
 
   HotSearch({
-    this.code,
-    this.data,
-    this.msg,
+    required this.code,
+    required this.data,
+    required this.msg,
   });
 
   factory HotSearch.fromJson(Map<String, dynamic> json) {
@@ -26,10 +26,10 @@ class HotSearchData {
   final List<SingleHotSearch> searches;
 
   HotSearchData({
-    this.time,
-    this.imageFile,
-    this.pdfFile,
-    this.searches,
+    required this.time,
+    required this.imageFile,
+    required this.pdfFile,
+    required this.searches,
   });
 
   factory HotSearchData.fromJson(Map<String, dynamic> json) {
@@ -54,12 +54,12 @@ class SingleHotSearch {
   String topicLead;
 
   SingleHotSearch({
-    this.rank,
-    this.content,
-    this.tag,
-    this.hot,
-    this.link,
-    this.topicLead,
+    required this.rank,
+    required this.content,
+    required this.tag,
+    required this.hot,
+    required this.link,
+    required this.topicLead,
   });
 
   factory SingleHotSearch.fromJson(Map<String, dynamic> json) {

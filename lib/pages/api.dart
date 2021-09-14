@@ -16,7 +16,7 @@ Future<HotSearch> fetchHotSearch() async {
 }
 
 class ApiPage extends StatefulWidget {
-  ApiPage({Key key, this.title}) : super(key: key);
+  ApiPage({ required this.title}) : super();
 
   final String title;
 
@@ -25,7 +25,7 @@ class ApiPage extends StatefulWidget {
 }
 
 class _ApiPageState extends State<ApiPage> {
-  Future<HotSearch> hotSearch;
+  late Future<HotSearch> hotSearch;
 
   @override
   void initState() {
@@ -44,7 +44,7 @@ class _ApiPageState extends State<ApiPage> {
           future: hotSearch,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              var data = snapshot.data.data;
+              var data = snapshot.data!.data;
               var time = data.time;
               var image = data.imageFile;
               var pdf = data.pdfFile;
@@ -85,18 +85,18 @@ class _ApiPageState extends State<ApiPage> {
 
 class ShowSearch extends StatelessWidget {
   ShowSearch({
-    @required this.rank,
-    @required this.content,
-    @required this.hot,
-    @required this.topicLead,
-    @required this.onPress,
+    required this.rank,
+    required this.content,
+    required this.hot,
+    required this.topicLead,
+    required this.onPress,
   });
 
   final int rank;
   final String content;
   final int hot;
   final String topicLead;
-  final Function onPress;
+  final void Function() onPress;
 
   @override
   Widget build(BuildContext context) {

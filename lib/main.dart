@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:map/pages/api.dart';
+import 'package:map/pages/chart.dart';
 import './pages/map.dart';
 
 void main() {
@@ -21,13 +22,14 @@ class MyApp extends StatelessWidget {
             MyHomePage(title: 'Flutter Demo Home Page'),
         '/map': (BuildContext context) => MapPage(title: 'Map Page'),
         '/api': (BuildContext context) => ApiPage(title: 'Api'),
+        '/chart': (BuildContext context) => Chart(),
       },
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({required this.title}) : super();
 
   final String title;
 
@@ -58,6 +60,10 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.of(context).pushNamed('/api');
   }
 
+  void _navigateToChart() {
+    Navigator.of(context).pushNamed('/chart');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,6 +89,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: _navigateToMap, child: const Text('Go To Map')),
             TextButton(
                 onPressed: _navigateToApi, child: const Text('Go To Api')),
+            TextButton(
+                onPressed: _navigateToChart, child: const Text('Go To Chart')),
           ],
         ),
       ),
