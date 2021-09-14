@@ -152,12 +152,12 @@ class _ChartState extends State<Chart> {
           isCurved: true,
           colors: gradientColors,
           barWidth: 5,
-          isStrokeCapRound: true,
+          isStrokeCapRound: false,
           dotData: FlDotData(
             show: false,
           ),
           belowBarData: BarAreaData(
-            show: true,
+            show: false,
             colors:
                 gradientColors.map((color) => color.withOpacity(0.3)).toList(),
           ),
@@ -187,7 +187,7 @@ class _ChartState extends State<Chart> {
       ),
       titlesData: FlTitlesData(
         show: true,
-        bottomTitles: SideTitles(
+        /*bottomTitles: SideTitles(
           showTitles: true,
           reservedSize: 22,
           getTextStyles: (context, value) => const TextStyle(
@@ -207,7 +207,7 @@ class _ChartState extends State<Chart> {
           },
           margin: 8,
           interval: 1,
-        ),
+        ),*/
         leftTitles: SideTitles(
           showTitles: true,
           getTextStyles: (context, value) => const TextStyle(
@@ -244,7 +244,6 @@ class _ChartState extends State<Chart> {
         LineChartBarData(
           spots: [
             FlSpot(0, 3.44),
-            FlSpot(2.6, 3.44),
             FlSpot(4.9, 3.44),
             FlSpot(6.8, 3.44),
             FlSpot(8, 3.44),
@@ -261,7 +260,7 @@ class _ChartState extends State<Chart> {
           barWidth: 5,
           isStrokeCapRound: true,
           dotData: FlDotData(
-            show: false,
+            show: true,
           ),
           belowBarData: BarAreaData(show: true, colors: [
             ColorTween(begin: gradientColors[0], end: gradientColors[1])
