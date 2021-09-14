@@ -1,10 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:map/src/model/hot_search.dart';
 
-Future<String> fetchSomeThing() async {
+Future<HotSearch> fetchHotSearch() async {
   final response =
       await http.get(Uri.parse('https://hs.hellozwz.com/hot-searches'));
-  return response.body;
+  if (response.statusCode == 200) {
+    return HotSearch.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception('Failed to load HotSearch');
+  }
 }
 
 class ApiPage extends StatefulWidget {
@@ -17,11 +24,11 @@ class ApiPage extends StatefulWidget {
 }
 
 class _ApiPageState extends State<ApiPage> {
-  Future<String> futureSome;
+  Future<HotSearch> hotSearch;
 
   @override
   void initState() {
-    futureSome = fetchSomeThing();
+    hotSearch = fetchHotSearch();
     super.initState();
   }
 
@@ -32,15 +39,39 @@ class _ApiPageState extends State<ApiPage> {
         title: Text('API'),
       ),
       body: Center(
-        child: Column(
-          children: [
-            FutureBuilder<String>(
-              future: futureSome,
-              builder: (context, snapshot) {
-                return Text(snapshot.data.toString());
-              },
-            )
-          ],
+        child: FutureBuilder<HotSearch>(
+          future: hotSearch,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              var data = snapshot.data.data;
+              var time = data.time;
+              var image = data.imageFile;
+              var pdf = data.pdfFile;
+              var searches = data.searches;
+              return Column(
+                children: <Widget>[
+                  Text(time),
+                  Text(image),
+                  Text(pdf),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: searches.length,
+                      itemBuilder: (context, int index) {
+                        return Column(
+                          children: [
+                            Text(searches[index].topicLead),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            } else if (snapshot.hasError) {
+              return Text('{$snapshot.error}');
+            }
+            return const CircularProgressIndicator();
+          },
         ),
       ),
     );
