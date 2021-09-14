@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:map/pages/api.dart';
 import 'package:map/pages/chart.dart';
+import 'package:url_launcher/url_launcher.dart';
 import './pages/map.dart';
 
 void main() {
@@ -64,6 +66,41 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.of(context).pushNamed('/chart');
   }
 
+  void _call() async {
+    const _url = 'tel:+8615153953308';
+    await canLaunch(_url)
+        ? await launch(_url)
+        : Fluttertoast.showToast(msg: "暂时不能跳转");
+  }
+
+  void _goToWeibo() async {
+    /**
+     * 打开首页
+     * sinaweibo://gotohome
+     * hotsearch
+     * 新发微博
+     * sinaweibo://share?content=[微博内容 URL Encode]
+     * 消息页面
+     * sinaweibo://discover
+     * 指定搜索
+     * sinaweibo://searchall?q=[URL Encode]
+     * 微博扫一扫
+     * sinaweibo://qrcode
+     * 微博详情页
+     * sinaweibo://detail?mblogid=[mblogid]
+     * 指定用户的全部微博
+     * sinaweibo://cardlist?containerid=[containerid]
+     * 和指定用户聊天
+     * sinaweibo://messagelist?uid=[uid]
+     * 指定用户资料页
+     * sinaweibo://userinfo?uid=[uid]
+     */
+    const _url = 'sinaweibo://gotohome';
+    await canLaunch(_url)
+        ? await launch(_url)
+        : Fluttertoast.showToast(msg: "暂时不能跳转");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,6 +128,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: _navigateToApi, child: const Text('Go To Api')),
             TextButton(
                 onPressed: _navigateToChart, child: const Text('Go To Chart')),
+            TextButton(onPressed: _call, child: const Text('Call')),
+            TextButton(onPressed: _goToWeibo, child: const Text('weibo')),
           ],
         ),
       ),

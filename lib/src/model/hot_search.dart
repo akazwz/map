@@ -19,6 +19,29 @@ class HotSearch {
   }
 }
 
+class HotSearchContent {
+  final int code;
+  final List<HotSearchData> data;
+  final String msg;
+
+  HotSearchContent({
+    required this.code,
+    required this.data,
+    required this.msg,
+  });
+
+  factory HotSearchContent.fromJson(Map<String, dynamic> json) {
+    var list = json['data'] as List;
+    List<HotSearchData> data =
+    list.map((i) => HotSearchData.fromJson(i)).toList();
+    return HotSearchContent(
+      code: json['code'],
+      data: data,
+      msg: json['msg'],
+    );
+  }
+}
+
 class HotSearchData {
   final String time;
   final String imageFile;

@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:map/src/model/hot_search.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 Future<HotSearch> fetchHotSearch() async {
   final response =
@@ -16,8 +17,7 @@ Future<HotSearch> fetchHotSearch() async {
 }
 
 class ApiPage extends StatefulWidget {
-  ApiPage({ required this.title}) : super();
-
+  ApiPage({required this.title}) : super();
   final String title;
 
   @override
@@ -28,13 +28,8 @@ class _ApiPageState extends State<ApiPage> {
   late Future<HotSearch> hotSearch;
 
   @override
-  void initState() {
-    hotSearch = fetchHotSearch();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    hotSearch = fetchHotSearch();
     return Scaffold(
       appBar: AppBar(
         title: Text('API'),
@@ -59,14 +54,24 @@ class _ApiPageState extends State<ApiPage> {
                       itemCount: searches.length,
                       itemBuilder: (context, int index) {
                         return ShowSearch(
-                            rank: searches[index].rank,
-                            content: searches[index].content,
-                            hot: searches[index].hot,
-                            topicLead: searches[index].topicLead,
-                            onPress: () {
-                              Fluttertoast.showToast(
-                                  msg: searches[index].content);
-                            });
+                          rank: searches[index].rank,
+                          content: searches[index].content,
+                          hot: searches[index].hot,
+                          topicLead: searches[index].topicLead,
+                          onPress: () {
+                            Navigator.of(context).pushNamed('/chart',
+                                arguments: {
+                                  'content': searches[index].content
+                                });
+                          },
+                          onLongPress: () async {
+                            var _url = 'sinaweibo://searchall?q=' +
+                                searches[index].content;
+                            await canLaunch(_url)
+                                ? await launch(_url)
+                                : Fluttertoast.showToast(msg: "暂时不能跳转");
+                          },
+                        );
                       },
                     ),
                   ),
@@ -90,6 +95,7 @@ class ShowSearch extends StatelessWidget {
     required this.hot,
     required this.topicLead,
     required this.onPress,
+    required this.onLongPress,
   });
 
   final int rank;
@@ -97,6 +103,7 @@ class ShowSearch extends StatelessWidget {
   final int hot;
   final String topicLead;
   final void Function() onPress;
+  final void Function() onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +111,11 @@ class ShowSearch extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Text(rank.toString() + " : " + hot.toString()),
-          TextButton(onPressed: this.onPress, child: Text(content)),
+          TextButton(
+            onPressed: this.onPress,
+            child: Text(content),
+            onLongPress: this.onLongPress,
+          ),
           Text(topicLead),
         ],
       ),

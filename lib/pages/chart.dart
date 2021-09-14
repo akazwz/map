@@ -1,5 +1,21 @@
+import 'dart:convert';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:map/src/model/hot_search.dart';
+
+Future<HotSearchContent> fetchHotSearchByContent(String content) async {
+  final response = await http.get(Uri.parse(
+      'https://hs.hellozwz.com/hot-searches/content/' +
+          content +
+          '?start=2021-08-20-00-00&stop=2021-09-14-21-47'));
+  if (response.statusCode == 200) {
+    return HotSearchContent.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception('Failed to load HotSearch');
+  }
+}
 
 class Chart extends StatefulWidget {
   @override
@@ -12,57 +28,54 @@ class _ChartState extends State<Chart> {
     const Color(0xff02d39a),
   ];
 
+  late Future<HotSearchContent> hotSearchContent;
+
   bool showAvg = false;
+
+  String contentStr = '';
+
+  getListNoChart() {
+    return <Widget>[
+      Text('no data'),
+    ];
+  }
+
+  getList(content) {
+    hotSearchContent = fetchHotSearchByContent(content);
+    return <Widget>[
+      FutureBuilder<HotSearchContent>(
+        future: hotSearchContent,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var code = snapshot.data;
+            print(code);
+            return Text("some");
+          } else if (snapshot.hasError) {
+            return Text('{$snapshot.error}');
+          }
+          return const CircularProgressIndicator();
+        },
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
+    Object? content = ModalRoute.of(context)!.settings.arguments;
+    if (content != null) {
+      Map contentMap = jsonDecode(jsonEncode(content));
+      contentStr = contentMap['content'].toString();
+      hotSearchContent = fetchHotSearchByContent(contentStr);
+    }
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Chart"),
-      ),
-      body: Center(
-        child: Stack(
-          children: <Widget>[
-            AspectRatio(
-              aspectRatio: 1.70,
-              child: Container(
-                decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(18),
-                    ),
-                    color: Color(0xff232d37)),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      right: 18.0, left: 12.0, top: 24, bottom: 12),
-                  child: LineChart(
-                    showAvg ? avgData() : mainData(),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 60,
-              height: 34,
-              child: TextButton(
-                onPressed: () {
-                  setState(() {
-                    showAvg = !showAvg;
-                  });
-                },
-                child: Text(
-                  'avg',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: showAvg
-                          ? Colors.white.withOpacity(0.5)
-                          : Colors.white),
-                ),
-              ),
-            ),
-          ],
+        appBar: AppBar(
+          title: Text(contentStr),
         ),
-      ),
-    );
+        body: Center(
+          child: Stack(
+            children: contentStr == '' ? getListNoChart() : getList(contentStr),
+          ),
+        ));
   }
 
   LineChartData mainData() {
