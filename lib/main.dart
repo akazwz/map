@@ -1,11 +1,29 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:map/pages/api.dart';
 import 'package:map/pages/chart.dart';
+import 'package:map/pages/dio_text.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:dio/dio.dart';
+import 'http.dart'; // make dio as global top-level variable
 import './pages/map.dart';
 
+// Must be top-level function
+_parseAndDecode(String response) {
+  return jsonDecode(response);
+}
+
+parseJson(String text) {
+  return compute(_parseAndDecode, text);
+}
+
 void main() {
+  dio.interceptors.add(LogInterceptor());
+  dio.options.receiveTimeout = 15000;
+  (dio.transformer as DefaultTransformer).jsonDecodeCallback = parseJson;
   runApp(MyApp());
 }
 
@@ -25,6 +43,7 @@ class MyApp extends StatelessWidget {
         '/map': (BuildContext context) => MapPage(title: 'Map Page'),
         '/api': (BuildContext context) => ApiPage(title: 'Api'),
         '/chart': (BuildContext context) => Chart(),
+        '/dio-test': (BuildContext context) => DioTest(),
       },
     );
   }
@@ -130,6 +149,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: _navigateToChart, child: const Text('Go To Chart')),
             TextButton(onPressed: _call, child: const Text('Call')),
             TextButton(onPressed: _goToWeibo, child: const Text('weibo')),
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/dio-test');
+                },
+                child: const Text('dio')),
           ],
         ),
       ),

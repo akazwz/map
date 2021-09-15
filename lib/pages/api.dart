@@ -1,16 +1,16 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart' as http;
 import 'package:map/src/model/hot_search.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../http.dart';
 
 Future<HotSearch> fetchHotSearch() async {
-  final response =
-      await http.get(Uri.parse('https://hs.hellozwz.com/hot-searches'));
+  final response = await dio.get('https://hs.hellozwz.com/hot-searches');
   if (response.statusCode == 200) {
-    return HotSearch.fromJson(jsonDecode(response.body));
+    return HotSearch.fromJson(response.data);
   } else {
     throw Exception('Failed to load HotSearch');
   }
@@ -28,8 +28,14 @@ class _ApiPageState extends State<ApiPage> {
   late Future<HotSearch> hotSearch;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    // TODO: implement initState
     hotSearch = fetchHotSearch();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('API'),
@@ -104,6 +110,7 @@ class ShowSearch extends StatelessWidget {
   final String topicLead;
   final void Function() onPress;
   final void Function() onLongPress;
+
 
   @override
   Widget build(BuildContext context) {
